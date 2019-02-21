@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class LuckyController
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LuckyController {
 
 	/**
-	 *
+	 * @Route("/lucky/number")
 	 * @return Response
 	 * @throws \Exception
 	 */
