@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Service\MarkdownHelper;
+use Nexy\Slack\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @package App\Controller
  */
 class ArticleController extends AbstractController {
+
+	private $isDebug;
+
+	public function __construct ( bool $isDebug ) {
+		$this->isDebug = $isDebug;
+	}
 
 	/**
 	 * @Route("/", name="app_homepage")
@@ -36,7 +43,16 @@ class ArticleController extends AbstractController {
 	 *
 	 * @return Response
 	 */
-	public function show ( $slug, MarkdownHelper $markdownHelper ) {
+	public function show ( $slug, MarkdownHelper $markdownHelper,  Client $slack ) {
+
+		if ( $slug === 'khan' ) {
+			$message = $slack->createMessage ()
+			                 ->from ( 'Khan' )
+			                 ->withIcon ( ':ghost:' )
+			                 ->setText ( 'Ah, Kirk, My old friend!' );
+
+			$slack->sendMessage ( $message );
+		}
 		$comments = [
 			'Morbi condimentum justo ex, at.',
 			'eque porro quisquam est qui dolorem ipsum quia dolor sit amet',
