@@ -4,8 +4,14 @@ $(document).ready(function () {
 
 		var $link = $(e.currentTarget);
 
-		$link.toggleClass('fa-hear-o').toggleClass('fa-heart');
+		$link.toggleClass('fa-heart-o').toggleClass('fa-heart');
 
-		$('.js-like-artcile-count').html('TEST');
+		$.ajax({
+			method: 'POST',
+			url: $link.attr('href')
+		}).done(function (data) {
+			$('.js-like-artcile-count').html(data.hearts);
+		});
+
 	});
 });
