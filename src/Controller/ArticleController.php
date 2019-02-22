@@ -8,9 +8,8 @@
 
 namespace App\Controller;
 
-use Michelf\MarkdownInterface;
+use App\Service\MarkdownHelper;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,7 +36,7 @@ class ArticleController extends AbstractController {
 	 *
 	 * @return Response
 	 */
-	public function show ( $slug, MarkdownInterface $markdown, AdapterInterface $cache ) {
+	public function show ( $slug, MarkdownHelper $markdownHelper ) {
 		$comments = [
 			'Morbi condimentum justo ex, at.',
 			'eque porro quisquam est qui dolorem ipsum quia dolor sit amet',
@@ -55,14 +54,7 @@ Sausage tenderloin officia jerky nostrud. Laborum elit pastrami non, pig kevin b
 
 Do mollit deserunt prosciutto laborum. Duis sint tongue quis nisi. Capicola qui beef ribs dolore pariatur. Minim strip steak fugiat nisi est, meatloaf pig aute. Swine rump turducken nulla sausage. Reprehenderit pork belly tongue alcatra, shoulder excepteur in beef bresaola duis ham bacon eiusmod. Doner drumstick short loin, adipisicing cow cillum tenderloin.
 EOF;
-
-		$item = $cache->getItem ( 'markdown_' . md5 ( $artcleContent ) );
-		if ( !$item->isHit () ) {
-			$item->set ( $markdown->transform ( $artcleContent ) );
-			$cache->save ( $item );
-		}
-
-		$artcleContent = $item->get ();
+		$artcleContent = $markdownHelper->parse ( $artcleContent );
 
 		return $this->render ( 'article/show.html.twig', [
 			'title'          => ucwords ( str_replace ( '-', ' ', $slug ) ),
