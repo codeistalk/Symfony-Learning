@@ -9,7 +9,7 @@
 namespace App\Controller;
 
 use App\Service\MarkdownHelper;
-use Nexy\Slack\Client;
+use App\Service\SlackClient;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,46 +20,46 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ArticleController
  * @package App\Controller
  */
-class ArticleController extends AbstractController {
+class ArticleController extends AbstractController
+{
 
-	private $isDebug;
+    private $isDebug;
 
-	public function __construct ( bool $isDebug ) {
-		$this->isDebug = $isDebug;
-	}
+    public function __construct(bool $isDebug)
+    {
+        $this->isDebug = $isDebug;
+    }
 
-	/**
-	 * @Route("/", name="app_homepage")
-	 * @return Response
-	 */
-	public function homepage () {
-		return $this->render ( 'article/homepage.html.twig' );
-	}
+    /**
+     * @Route("/", name="app_homepage")
+     * @return Response
+     */
+    public function homepage()
+    {
+        return $this->render('article/homepage.html.twig');
+    }
 
-	/**
-	 * @Route("/news/{slug}", name="article_show")
-	 *
-	 * @param $slug
-	 *
-	 * @return Response
-	 */
-	public function show ( $slug, MarkdownHelper $markdownHelper,  Client $slack ) {
+    /**
+     * @Route("/news/{slug}", name="article_show")
+     *
+     * @param $slug
+     * @param MarkdownHelper $markdownHelper
+     * @param SlackClient $slack
+     * @return Response
+     */
+    public function show($slug, MarkdownHelper $markdownHelper, SlackClient $slack)
+    {
 
-		if ( $slug === 'khan' ) {
-			$message = $slack->createMessage ()
-			                 ->from ( 'Khan' )
-			                 ->withIcon ( ':ghost:' )
-			                 ->setText ( 'Ah, Kirk, My old friend!' );
+        if ($slug === 'khan') {
+            $slack->sendMessage('Khan', 'Ah, Kirk, My old friend!');
+        }
+        $comments = [
+            'Morbi condimentum justo ex, at.',
+            'eque porro quisquam est qui dolorem ipsum quia dolor sit amet',
+            'last one',
+        ];
 
-			$slack->sendMessage ( $message );
-		}
-		$comments = [
-			'Morbi condimentum justo ex, at.',
-			'eque porro quisquam est qui dolorem ipsum quia dolor sit amet',
-			'last one',
-		];
-
-		$artcleContent = <<<EOF
+        $artcleContent = <<<EOF
 Spicy **jalapeno** bacon ipsum dolor amet veniam shank in dolore. Ham hock nisi landjaeger cow, lorem proident [beef ribs](https://baconipsum.com/) aute enim veniam ut cillum pork chuck picanha. Dolore reprehenderit labore minim pork belly spare ribs cupim short loin in. Elit exercitation eiusmod dolore cow **turkey** shank eu pork belly meatball non cupim.
 
 Laboris beef ribs fatback fugiat eiusmod jowl kielbasa alcatra dolore velit ea ball tip. Pariatur laboris sunt venison, et laborum dolore minim non meatball. Shankle eu flank aliqua shoulder, capicola biltong frankfurter boudin cupim officia. Exercitation fugiat consectetur ham. Adipisicing picanha shank et filet mignon pork belly ut ullamco. Irure velit turducken ground round doner incididunt occaecat lorem meatball prosciutto quis strip steak.
@@ -70,24 +70,25 @@ Sausage tenderloin officia jerky nostrud. Laborum elit pastrami non, pig kevin b
 
 Do mollit deserunt prosciutto laborum. Duis sint tongue quis nisi. Capicola qui beef ribs dolore pariatur. Minim strip steak fugiat nisi est, meatloaf pig aute. Swine rump turducken nulla sausage. Reprehenderit pork belly tongue alcatra, shoulder excepteur in beef bresaola duis ham bacon eiusmod. Doner drumstick short loin, adipisicing cow cillum tenderloin.
 EOF;
-		$artcleContent = $markdownHelper->parse ( $artcleContent );
+        $artcleContent = $markdownHelper->parse($artcleContent);
 
-		return $this->render ( 'article/show.html.twig', [
-			'title'          => ucwords ( str_replace ( '-', ' ', $slug ) ),
-			'articleContent' => $artcleContent,
-			'slug'           => $slug,
-			'comments'       => $comments,
-		] );
-	}
+        return $this->render('article/show.html.twig', [
+            'title' => ucwords(str_replace('-', ' ', $slug)),
+            'articleContent' => $artcleContent,
+            'slug' => $slug,
+            'comments' => $comments,
+        ]);
+    }
 
-	/**
-	 * @Route("/news/{slug}/heart", name="article_toggle_heart", methods={"POST"})
-	 */
-	public function toggleArticleHeart ( $slug, LoggerInterface $logger ) {
-		// TODO - actually heart/unheart the article!
+    /**
+     * @Route("/news/{slug}/heart", name="article_toggle_heart", methods={"POST"})
+     */
+    public function toggleArticleHeart($slug, LoggerInterface $logger)
+    {
+        // TODO - actually heart/unheart the article!
 
-		$logger->info ( 'Article is being hearted' );
+        $logger->info('Article is being hearted');
 
-		return new JsonResponse( [ 'hearts' => rand ( 5, 100 ) ] );
-	}
+        return new JsonResponse(['hearts' => rand(5, 100)]);
+    }
 }
