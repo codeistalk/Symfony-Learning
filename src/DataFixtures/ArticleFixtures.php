@@ -52,7 +52,7 @@ EOF
 			        ->setHeartCount ( $this->faker->numberBetween ( 5, 100 ) )
 			        ->setImageFilename ( $this->faker->randomElement ( self::$articleImages ) );
 
-			$comment1 = new Comment();
+			/*$comment1 = new Comment();
 			$comment1->setAuthourName ( 'Mike Ferengi' )
 			         ->setContent ( 'I ate a normal rock once. it did NOT taste like bacon!' );
 			$comment1->setArticle ( $article );
@@ -62,7 +62,7 @@ EOF
 			$comment2->setAuthourName ( 'Mike Ferengi' )
 			         ->setContent ( 'Woohoo! I\'m going on an all-asteroid diet!' );
 			$comment2->setArticle ( $article );
-			$manager->persist ( $comment2 );
+			$manager->persist ( $comment2 );*/
 
 		} );
 		$manager->flush ();
