@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\Timestampable;
@@ -9,150 +11,170 @@ use Gedmo\Timestampable\Traits\Timestampable;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  */
-class Article
-{
-    use Timestampable;
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+class Article {
+	use Timestampable;
+	/**
+	 * @ORM\Id()
+	 * @ORM\GeneratedValue()
+	 * @ORM\Column(type="integer")
+	 */
+	private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $title;
+	/**
+	 * @ORM\Column(type="string", length=255)
+	 */
+	private $title;
 
-    /**
-     *
-     * @ORM\Column(type="string", length=100, unique=true)
-     * @Gedmo\Slug(fields={"title"})
-     */
-    private $slug;
+	/**
+	 *
+	 * @ORM\Column(type="string", length=100, unique=true)
+	 * @Gedmo\Slug(fields={"title"})
+	 */
+	private $slug;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $content;
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 */
+	private $content;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $publishedAt;
+	/**
+	 * @ORM\Column(type="datetime", nullable=true)
+	 */
+	private $publishedAt;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $author;
+	/**
+	 * @ORM\Column(type="string", length=255)
+	 */
+	private $author;
 
-    /**
-     * @ORM\Column(type="integer", )
-     */
-    private $heartCount = 0;
+	/**
+	 * @ORM\Column(type="integer", )
+	 */
+	private $heartCount = 0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $imageFilename;
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $imageFilename;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="article")
+	 */
+	private $comments;
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
+	public function __construct () {
+		$this->comments = new ArrayCollection();
+	}
 
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
+	public function getId (): ?int {
+		return $this->id;
+	}
 
-        return $this;
-    }
+	public function getTitle (): ?string {
+		return $this->title;
+	}
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
+	public function setTitle ( string $title ): self {
+		$this->title = $title;
 
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getSlug (): ?string {
+		return $this->slug;
+	}
 
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
+	public function setSlug ( string $slug ): self {
+		$this->slug = $slug;
 
-    public function setContent(?string $content): self
-    {
-        $this->content = $content;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getContent (): ?string {
+		return $this->content;
+	}
 
-    public function getPublishedAt(): ?\DateTimeInterface
-    {
-        return $this->publishedAt;
-    }
+	public function setContent ( ?string $content ): self {
+		$this->content = $content;
 
-    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
-    {
-        $this->publishedAt = $publishedAt;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getPublishedAt (): ?\DateTimeInterface {
+		return $this->publishedAt;
+	}
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
+	public function setPublishedAt ( ?\DateTimeInterface $publishedAt ): self {
+		$this->publishedAt = $publishedAt;
 
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getAuthor (): ?string {
+		return $this->author;
+	}
 
-    public function getHeartCount(): ?int
-    {
-        return $this->heartCount;
-    }
+	public function setAuthor ( string $author ): self {
+		$this->author = $author;
 
-    public function setHeartCount(int $heartCount): self
-    {
-        $this->heartCount = $heartCount;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getHeartCount (): ?int {
+		return $this->heartCount;
+	}
 
-    public function getImageFilename(): ?string
-    {
-        return $this->imageFilename;
-    }
+	public function setHeartCount ( int $heartCount ): self {
+		$this->heartCount = $heartCount;
 
-    public function setImageFilename(?string $imageFilename): self
-    {
-        $this->imageFilename = $imageFilename;
+		return $this;
+	}
 
-        return $this;
-    }
+	public function getImageFilename (): ?string {
+		return $this->imageFilename;
+	}
 
-    public function getImagePath()
-    {
-        return 'images/' . $this->getImageFilename();
-    }
+	public function setImageFilename ( ?string $imageFilename ): self {
+		$this->imageFilename = $imageFilename;
 
-    public function incrementHeartCount(): self
-    {
-        $this->heartCount = $this->getHeartCount() + 1;
-        return $this;
-    }
+		return $this;
+	}
+
+	public function getImagePath () {
+		return 'images/' . $this->getImageFilename ();
+	}
+
+	public function incrementHeartCount (): self {
+		$this->heartCount = $this->getHeartCount () + 1;
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection|Comment[]
+	 */
+	public function getComments (): Collection {
+		return $this->comments;
+	}
+
+	public function addComment ( Comment $comment ): self {
+		if ( !$this->comments->contains ( $comment ) ) {
+			$this->comments[] = $comment;
+			$comment->setArticle ( $this );
+		}
+
+		return $this;
+	}
+
+	public function removeComment ( Comment $comment ): self {
+		if ( $this->comments->contains ( $comment ) ) {
+			$this->comments->removeElement ( $comment );
+			// set the owning side to null (unless already changed)
+			if ( $comment->getArticle () === $this ) {
+				$comment->setArticle ( null );
+			}
+		}
+
+		return $this;
+	}
 }
