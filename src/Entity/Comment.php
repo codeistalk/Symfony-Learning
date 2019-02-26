@@ -22,7 +22,7 @@ class Comment {
 	/**
 	 * @ORM\Column(type="string", length=255)
 	 */
-	private $authourName;
+	private $authorName;
 
 	/**
 	 * @ORM\Column(type="text")
@@ -44,12 +44,12 @@ class Comment {
 		return $this->id;
 	}
 
-	public function getAuthourName (): ?string {
-		return $this->authourName;
+	public function getAuthorName (): ?string {
+		return $this->authorName;
 	}
 
-	public function setAuthourName ( string $authourName ): self {
-		$this->authourName = $authourName;
+	public function setAuthorName ( string $authorName ): self {
+		$this->authorName = $authorName;
 
 		return $this;
 	}

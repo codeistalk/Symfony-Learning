@@ -28,7 +28,7 @@ class CommentRepository extends ServiceEntityRepository {
 		           ->addSelect ( 'a' );
 
 		if ( $term ) {
-			$qb->andWhere ( 'c.content LIKE :term OR c.authourName LIKE :term OR a.title LIKE :term' )
+			$qb->andWhere ( 'c.content LIKE :term OR c.authorName LIKE :term OR a.title LIKE :term' )
 			   ->setParameter ( 'term', '%' . $term . '%' );
 		}
 
