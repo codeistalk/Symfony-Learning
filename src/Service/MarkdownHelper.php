@@ -11,53 +11,56 @@ namespace App\Service;
 use Michelf\MarkdownInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class MarkdownHelper
  * @package App\Service
  */
-class MarkdownHelper
-{
+class MarkdownHelper {
 
-    private $cache;
+	private $cache;
 
-    private $markdown;
+	private $markdown;
 
-    private $logger;
+	private $logger;
 
-    private $isDebug;
+	private $isDebug;
 
-    /**
-     * MarkdownHelper constructor.
-     *
-     * @param AdapterInterface $cache
-     * @param MarkdownInterface $markdown
-     */
-    public function __construct(AdapterInterface $cache, MarkdownInterface $markdown, LoggerInterface $markdownLogger, bool $isDebug)
-    {
-        $this->cache = $cache;
-        $this->markdown = $markdown;
-        $this->logger = $markdownLogger;
-        $this->isDebug = $isDebug;
-    }
+	private $security;
 
-    public function parse(string $source): string
-    {
+	/**
+	 * MarkdownHelper constructor.
+	 *
+	 * @param AdapterInterface  $cache
+	 * @param MarkdownInterface $markdown
+	 */
+	public function __construct ( AdapterInterface $cache, MarkdownInterface $markdown, LoggerInterface $markdownLogger, bool $isDebug, Security $security ) {
+		$this->cache = $cache;
+		$this->markdown = $markdown;
+		$this->logger = $markdownLogger;
+		$this->isDebug = $isDebug;
+		$this->security = $security;
+	}
 
-        if (stripos($source, 'bacon') !== false) {
-            $this->logger->info('They are talking about bacon again!');
-        }
+	public function parse ( string $source ): string {
 
-        if ($this->isDebug) {
-            return $this->markdown->transform($source);
-        }
+		if ( stripos ( $source, 'bacon' ) !== false ) {
+			$this->logger->info ( 'They are talking about bacon again!', [
+				'user' => $this->security->getUser (),
+			] );
+		}
 
-        $item = $this->cache->getItem('markdown_' . md5($source));
-        if (!$item->isHit()) {
-            $item->set($this->markdown->transform($source));
-            $this->cache->save($item);
-        }
+		if ( $this->isDebug ) {
+			return $this->markdown->transform ( $source );
+		}
 
-        return $item->get();
-    }
+		$item = $this->cache->getItem ( 'markdown_' . md5 ( $source ) );
+		if ( !$item->isHit () ) {
+			$item->set ( $this->markdown->transform ( $source ) );
+			$this->cache->save ( $item );
+		}
+
+		return $item->get ();
+	}
 }
