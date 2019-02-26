@@ -47,35 +47,34 @@ class User implements UserInterface {
 	 */
 	private $twitterUsername;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ApiToken", mappedBy="user", orphanRemoval=true)
-     */
-    private $apiTokens;
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\ApiToken", mappedBy="user", orphanRemoval=true)
+	 */
+	private $apiTokens;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
-     */
-    private $articles;
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
+	 */
+	private $articles;
 
-    public function __construct()
-    {
-        $this->apiTokens = new ArrayCollection();
-        $this->articles = new ArrayCollection();
-    }
+	public function __construct () {
+		$this->apiTokens = new ArrayCollection();
+		$this->articles = new ArrayCollection();
+	}
 
 	public function getId (): ?int {
-                                       		return $this->id;
-                                       	}
+		return $this->id;
+	}
 
 	public function getEmail (): ?string {
-                                       		return $this->email;
-                                       	}
+		return $this->email;
+	}
 
 	public function setEmail ( string $email ): self {
-                                       		$this->email = $email;
-                                       
-                                       		return $this;
-                                       	}
+		$this->email = $email;
+
+		return $this;
+	}
 
 	/**
 	 * A visual identifier that represents this user.
@@ -83,143 +82,141 @@ class User implements UserInterface {
 	 * @see UserInterface
 	 */
 	public function getUsername (): string {
-                                       		return (string) $this->email;
-                                       	}
+		return (string) $this->email;
+	}
 
 	/**
 	 * @see UserInterface
 	 */
 	public function getRoles (): array {
-                                       		$roles = $this->roles;
-                                       		// guarantee every user at least has ROLE_USER
-                                       		$roles[] = 'ROLE_USER';
-                                       
-                                       		return array_unique ( $roles );
-                                       	}
+		$roles = $this->roles;
+		// guarantee every user at least has ROLE_USER
+		$roles[] = 'ROLE_USER';
+
+		return array_unique ( $roles );
+	}
 
 	public function setRoles ( array $roles ): self {
-                                       		$this->roles = $roles;
-                                       
-                                       		return $this;
-                                       	}
+		$this->roles = $roles;
+
+		return $this;
+	}
 
 	/**
 	 * @see UserInterface
 	 */
 	public function getPassword () {
-                                       		return $this->password;
-                                       	}
+		return $this->password;
+	}
 
 	/**
 	 * @see UserInterface
 	 */
 	public function getSalt () {
-                                       		// not needed when using bcrypt or argon
-                                       	}
+		// not needed when using bcrypt or argon
+	}
 
 	/**
 	 * @see UserInterface
 	 */
 	public function eraseCredentials () {
-                                       		// If you store any temporary, sensitive data on the user, clear it here
-                                       		// $this->plainPassword = null;
-                                       	}
+		// If you store any temporary, sensitive data on the user, clear it here
+		// $this->plainPassword = null;
+	}
 
 	public function getFirstName (): ?string {
-                                       		return $this->firstName;
-                                       	}
+		return $this->firstName;
+	}
 
 	public function setFirstName ( string $firstName ): self {
-                                       		$this->firstName = $firstName;
-                                       
-                                       		return $this;
-                                       	}
+		$this->firstName = $firstName;
+
+		return $this;
+	}
 
 	public function setPassword ( string $password ): self {
-                                       		$this->password = $password;
-                                       
-                                       		return $this;
-                                       	}
+		$this->password = $password;
+
+		return $this;
+	}
 
 	public function getTwitterUsername (): ?string {
-                                       		return $this->twitterUsername;
-                                       	}
+		return $this->twitterUsername;
+	}
 
 	public function setTwitterUsername ( ?string $twitterUsername ): self {
-                                       		$this->twitterUsername = $twitterUsername;
-                                       
-                                       		return $this;
-                                       	}
+		$this->twitterUsername = $twitterUsername;
+
+		return $this;
+	}
 
 	public function getAvatarUrl ( int $size = null ): string {
-                                       		$url = 'https://robohash.org/' . $this->getEmail ();
-                                       
-                                       		if ( $size ) {
-                                       			$url .= sprintf ( '?size=%dx%d', $size, $size );
-                                       		}
-                                       
-                                       		return $url;
-                                       	}
+		$url = 'https://robohash.org/' . $this->getEmail ();
 
-    /**
-     * @return Collection|ApiToken[]
-     */
-    public function getApiTokens(): Collection
-    {
-        return $this->apiTokens;
-    }
+		if ( $size ) {
+			$url .= sprintf ( '?size=%dx%d', $size, $size );
+		}
 
-    public function addApiToken(ApiToken $apiToken): self
-    {
-        if (!$this->apiTokens->contains($apiToken)) {
-            $this->apiTokens[] = $apiToken;
-            $apiToken->setUser($this);
-        }
+		return $url;
+	}
 
-        return $this;
-    }
+	/**
+	 * @return Collection|ApiToken[]
+	 */
+	public function getApiTokens (): Collection {
+		return $this->apiTokens;
+	}
 
-    public function removeApiToken(ApiToken $apiToken): self
-    {
-        if ($this->apiTokens->contains($apiToken)) {
-            $this->apiTokens->removeElement($apiToken);
-            // set the owning side to null (unless already changed)
-            if ($apiToken->getUser() === $this) {
-                $apiToken->setUser(null);
-            }
-        }
+	public function addApiToken ( ApiToken $apiToken ): self {
+		if ( !$this->apiTokens->contains ( $apiToken ) ) {
+			$this->apiTokens[] = $apiToken;
+			$apiToken->setUser ( $this );
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * @return Collection|Article[]
-     */
-    public function getArticles(): Collection
-    {
-        return $this->articles;
-    }
+	public function removeApiToken ( ApiToken $apiToken ): self {
+		if ( $this->apiTokens->contains ( $apiToken ) ) {
+			$this->apiTokens->removeElement ( $apiToken );
+			// set the owning side to null (unless already changed)
+			if ( $apiToken->getUser () === $this ) {
+				$apiToken->setUser ( null );
+			}
+		}
 
-    public function addArticle(Article $article): self
-    {
-        if (!$this->articles->contains($article)) {
-            $this->articles[] = $article;
-            $article->setAuthor($this);
-        }
+		return $this;
+	}
 
-        return $this;
-    }
+	/**
+	 * @return Collection|Article[]
+	 */
+	public function getArticles (): Collection {
+		return $this->articles;
+	}
 
-    public function removeArticle(Article $article): self
-    {
-        if ($this->articles->contains($article)) {
-            $this->articles->removeElement($article);
-            // set the owning side to null (unless already changed)
-            if ($article->getAuthor() === $this) {
-                $article->setAuthor(null);
-            }
-        }
+	public function addArticle ( Article $article ): self {
+		if ( !$this->articles->contains ( $article ) ) {
+			$this->articles[] = $article;
+			$article->setAuthor ( $this );
+		}
 
-        return $this;
-    }
+		return $this;
+	}
+
+	public function removeArticle ( Article $article ): self {
+		if ( $this->articles->contains ( $article ) ) {
+			$this->articles->removeElement ( $article );
+			// set the owning side to null (unless already changed)
+			if ( $article->getAuthor () === $this ) {
+				$article->setAuthor ( null );
+			}
+		}
+
+		return $this;
+	}
+
+	public function __toString () {
+		return $this->getFirstName ();
+	}
 }
