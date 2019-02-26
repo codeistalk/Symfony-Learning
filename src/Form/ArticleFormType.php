@@ -12,36 +12,41 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ArticleFormType extends AbstractType {
+class ArticleFormType extends AbstractType
+{
 
-	private $userRepository;
+    private $userRepository;
 
-	public function __construct ( UserRepository $userRepository ) {
-		$this->userRepository = $userRepository;
-	}
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
-	public function buildForm ( FormBuilderInterface $builder, array $options ) {
-		$builder
-			->add ( 'title', TextType::class, [
-				'help' => 'Choose something catchy!',
-			] )
-			->add ( 'content', TextareaType::class )
-			->add ( 'publishedAt', null, [
-				'widget' => 'single_text',
-			] )
-			->add ( 'author', EntityType::class, [
-				'class'        => User::class,
-				'choice_label' => function ( User $user ) {
-					return sprintf ( '(%d) %s', $user->getId (), $user->getEmail () );
-				},
-				'placeholder'  => 'Choose an author',
-				'choices'      => $this->userRepository->findAllEmailAlphabetical (),
-			] );
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', TextType::class, [
+                'help' => 'Choose something catchy!',
+            ])
+            ->add('content', TextareaType::class)
+            ->add('publishedAt', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('author', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => function (User $user) {
+                    return sprintf('(%d) %s', $user->getId(), $user->getEmail());
+                },
+                'placeholder' => 'Choose an author',
+                'choices' => $this->userRepository->findAllEmailAlphabetical(),
+                'invalid_message' => 'Symfony is too smart for your hacking!'
+            ]);
+    }
 
-	public function configureOptions ( OptionsResolver $resolver ) {
-		$resolver->setDefaults ( [
-			                         'data_class' => Article::class,
-		                         ] );
-	}
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Article::class,
+        ]);
+    }
 }
