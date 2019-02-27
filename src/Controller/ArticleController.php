@@ -24,50 +24,55 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ArticleController
  * @package App\Controller
  */
-class ArticleController extends AbstractController {
+class ArticleController extends AbstractController
+{
 
-	private $isDebug;
+    private $isDebug;
 
-	public function __construct ( bool $isDebug ) {
-		$this->isDebug = $isDebug;
-	}
+    public function __construct(bool $isDebug)
+    {
+        $this->isDebug = $isDebug;
+    }
 
-	/**
-	 * @Route("/", name="app_homepage")
-	 * @return Response
-	 */
-	public function homepage ( ArticleRepository $repository ) {
-		$articles = $repository->findAllPublishedOrderedByNewest ();
+    /**
+     * @Route("/", name="app_homepage")
+     * @return Response
+     */
+    public function homepage(ArticleRepository $repository)
+    {
+        $articles = $repository->findAllPublishedOrderedByNewest();
 
-		return $this->render ( 'article/homepage.html.twig', [
-			'articles' => $articles,
-		] );
-	}
+        return $this->render('article/homepage.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
 
-	/**
-	 * @Route("/news/{slug}", name="article_show")
-	 *
-	 */
-	public function show ( Article $article, SlackClient $slack ) {
+    /**
+     * @Route("/news/{slug}", name="article_show")
+     *
+     */
+    public function show(Article $article, SlackClient $slack)
+    {
 
-		if ( $article->getSlug () === 'khan' ) {
-			$slack->sendMessage ( 'Khan', 'Ah, Kirk, My old friend!' );
-		}
+        if ($article->getSlug() === 'khan') {
+            $slack->sendMessage('Khan', 'Ah, Kirk, My old friend!');
+        }
 
-		return $this->render ( 'article/show.html.twig', [
-			'article' => $article,
-		] );
-	}
+        return $this->render('article/show.html.twig', [
+            'article' => $article,
+        ]);
+    }
 
-	/**
-	 * @Route("/news/{slug}/heart", name="article_toggle_heart", methods={"POST"})
-	 */
-	public function toggleArticleHeart ( Article $article, LoggerInterface $logger, EntityManagerInterface $em ) {
-		$article->incrementHeartCount ();
-		$em->flush ();
+    /**
+     * @Route("/news/{slug}/heart", name="article_toggle_heart", methods={"POST"})
+     */
+    public function toggleArticleHeart(Article $article, LoggerInterface $logger, EntityManagerInterface $em)
+    {
+        $article->incrementHeartCount();
+        $em->flush();
 
-		$logger->info ( 'Article is being hearted' );
+        $logger->info('Article is being hearted');
 
-		return new JsonResponse( [ 'hearts' => $article->getHeartCount () ] );
-	}
+        return new JsonResponse(['hearts' => $article->getHeartCount()]);
+    }
 }

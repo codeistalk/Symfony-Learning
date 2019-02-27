@@ -18,48 +18,54 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 
-class UserSelectTextType extends AbstractType {
+class UserSelectTextType extends AbstractType
+{
 
-	private $userRepository;
+    private $userRepository;
 
-	private $router;
+    private $router;
 
-	public function __construct ( UserRepository $userRepository, RouterInterface $router ) {
-		$this->userRepository = $userRepository;
-		$this->router = $router;
-	}
+    public function __construct(UserRepository $userRepository, RouterInterface $router)
+    {
+        $this->userRepository = $userRepository;
+        $this->router = $router;
+    }
 
-	public function buildForm ( FormBuilderInterface $builder, array $options ) {
-		$builder->addModelTransformer ( new EmailToUserTransformer(
-			                                $this->userRepository,
-			                                $options['finder_callback']
-		                                ) );
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new EmailToUserTransformer(
+            $this->userRepository,
+            $options['finder_callback']
+        ));
+    }
 
-	public function getParent () {
+    public function getParent()
+    {
 
-		return TextType::class;
-	}
+        return TextType::class;
+    }
 
-	public function configureOptions ( OptionsResolver $resolver ) {
-		$resolver->setDefaults ( [
-			                         'invalid_message' => 'Hmm, user not found!',
-			                         'finder_callback' => function ( UserRepository $userRepository, string $email ) {
-				                         return $userRepository->findOneBy ( [ 'email' => $email ] );
-			                         },
-		                         ] );
-	}
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'invalid_message' => 'Hmm, user not found!',
+            'finder_callback' => function (UserRepository $userRepository, string $email) {
+                return $userRepository->findOneBy(['email' => $email]);
+            },
+        ]);
+    }
 
-	public function buildView ( FormView $view, FormInterface $form, array $options ) {
-		$attr = $view->vars['attr'];
-		$class = isset( $attr['class'] ) ? $attr['class'] . ' ' : '';
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $attr = $view->vars['attr'];
+        $class = isset($attr['class']) ? $attr['class'] . ' ' : '';
 
-		$class .= 'js-user-autocomplete';
+        $class .= 'js-user-autocomplete';
 
-		$attr['class'] = $class;
-		$attr['data-autocomplete-url'] = $this->router->generate ( 'admin_utility_users' );
+        $attr['class'] = $class;
+        $attr['data-autocomplete-url'] = $this->router->generate('admin_utility_users');
 
-		$view->vars['attr'] = $attr;
-	}
+        $view->vars['attr'] = $attr;
+    }
 
 }

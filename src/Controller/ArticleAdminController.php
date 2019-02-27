@@ -23,69 +23,73 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  *
  */
-class ArticleAdminController extends AbstractController {
+class ArticleAdminController extends AbstractController
+{
 
-	/**
-	 * @Route("/admin/article/new", name="admin_article_new")
-	 * @IsGranted("ROLE_ADMIN_ARTICLE")
-	 */
-	public function new ( EntityManagerInterface $em, Request $request ) {
-		$form = $this->createForm ( ArticleFormType::class );
-		$form->handleRequest ( $request );
+    /**
+     * @Route("/admin/article/new", name="admin_article_new")
+     * @IsGranted("ROLE_ADMIN_ARTICLE")
+     */
+    public function new(EntityManagerInterface $em, Request $request)
+    {
+        $form = $this->createForm(ArticleFormType::class);
+        $form->handleRequest($request);
 
-		if ( $form->isSubmitted () && $form->isValid () ) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-			/** @var Article $article */
-			$article = $form->getData ();
+            /** @var Article $article */
+            $article = $form->getData();
 
-			$em->persist ( $article );
-			$em->flush ();
+            $em->persist($article);
+            $em->flush();
 
-			$this->addFlash ( 'success', 'Article Created! Knowledge is Power!' );
+            $this->addFlash('success', 'Article Created! Knowledge is Power!');
 
-			return $this->redirectToRoute ( 'admin_article_list' );
-		}
+            return $this->redirectToRoute('admin_article_list');
+        }
 
-		return $this->render ( 'article_admin/new.html.twig', [
-			'articleForm' => $form->createView (),
-		] );
-	}
+        return $this->render('article_admin/new.html.twig', [
+            'articleForm' => $form->createView(),
+        ]);
+    }
 
-	/**
-	 * @Route("/admin/article/{id}/edit", name="admin_article_edit")
-	 * @IsGranted("MANAGE", subject="article")
-	 */
-	public function edit ( Article $article, Request $request, EntityManagerInterface $em ) {
+    /**
+     * @Route("/admin/article/{id}/edit", name="admin_article_edit")
+     * @IsGranted("MANAGE", subject="article")
+     */
+    public function edit(Article $article, Request $request, EntityManagerInterface $em)
+    {
 
-		$form = $this->createForm ( ArticleFormType::class, $article );
-		$form->handleRequest ( $request );
+        $form = $this->createForm(ArticleFormType::class, $article);
+        $form->handleRequest($request);
 
-		if ( $form->isSubmitted () && $form->isValid () ) {
-			$em->persist ( $article );
-			$em->flush ();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($article);
+            $em->flush();
 
-			$this->addFlash ( 'success', 'Article Updated! Inaccuracies squashed!' );
+            $this->addFlash('success', 'Article Updated! Inaccuracies squashed!');
 
-			return $this->redirectToRoute ( 'admin_article_edit', [
-				'id' => $article->getId (),
-			] );
-		}
+            return $this->redirectToRoute('admin_article_edit', [
+                'id' => $article->getId(),
+            ]);
+        }
 
-		return $this->render ( 'article_admin/edit.html.twig', [
-			'articleForm' => $form->createView (),
-		] );
-	}
+        return $this->render('article_admin/edit.html.twig', [
+            'articleForm' => $form->createView(),
+        ]);
+    }
 
-	/**
-	 * @Route("/admin/article", name="admin_article_list")
-	 */
-	public function list ( ArticleRepository $articleRepo ) {
+    /**
+     * @Route("/admin/article", name="admin_article_list")
+     */
+    public function list(ArticleRepository $articleRepo)
+    {
 
-		$articles = $articleRepo->findAll ();
+        $articles = $articleRepo->findAll();
 
-		return $this->render ( 'article_admin/list.html.twig', [
-			'articles' => $articles,
-		] );
-	}
+        return $this->render('article_admin/list.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
 
 }

@@ -13,42 +13,46 @@ use App\Repository\UserRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class EmailToUserTransformer implements DataTransformerInterface {
+class EmailToUserTransformer implements DataTransformerInterface
+{
 
-	private $userRepository;
+    private $userRepository;
 
-	private $finderCallback;
+    private $finderCallback;
 
-	public function __construct ( UserRepository $userRepository, callable $finderCallback ) {
-		$this->userRepository = $userRepository;
-		$this->finderCallback = $finderCallback;
-	}
+    public function __construct(UserRepository $userRepository, callable $finderCallback)
+    {
+        $this->userRepository = $userRepository;
+        $this->finderCallback = $finderCallback;
+    }
 
-	public function transform ( $value ) {
-		if ( null === $value ) {
-			return '';
-		}
+    public function transform($value)
+    {
+        if (null === $value) {
+            return '';
+        }
 
-		if ( !$value instanceof User ) {
-			throw new \LogicException( 'The UserSelectTextType can only be used with User objects' );
-		}
+        if (!$value instanceof User) {
+            throw new \LogicException('The UserSelectTextType can only be used with User objects');
+        }
 
-		return $value->getEmail ();
-	}
+        return $value->getEmail();
+    }
 
-	public function reverseTransform ( $value ) {
-		if ( !$value ) {
-			return;
-		}
+    public function reverseTransform($value)
+    {
+        if (!$value) {
+            return;
+        }
 
-		$callback = $this->finderCallback;
-		$user = $callback( $this->userRepository, $value );
+        $callback = $this->finderCallback;
+        $user = $callback($this->userRepository, $value);
 
-		if ( !$user ) {
-			throw new TransformationFailedException( sprintf ( 'No user found with email "%s"', $value ) );
-		}
+        if (!$user) {
+            throw new TransformationFailedException(sprintf('No user found with email "%s"', $value));
+        }
 
-		return $user;
-	}
+        return $user;
+    }
 
 }
