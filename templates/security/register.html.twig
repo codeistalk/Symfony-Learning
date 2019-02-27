@@ -9,8 +9,15 @@
 
 {% block body %}
 
+    {{  form_start(registrationForm) }}
+    {{  form_widget(registrationForm) }}
+    <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Register
+    </button>
+    {{  form_end(registrationForm) }}
+    {#
     <form class="form-signin" method="post">
-        {# todo - replace with a Symfony form #}
+
         <h1 class="h3 mb-3 font-weight-normal">Register</h1>
         <label for="inputEmail" class="sr-only">Email address</label>
         <input type="email"  name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
@@ -22,9 +29,7 @@
                 <input type="checkbox" name="_term"> Agree to terms I for sure read
             </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">
-            Register
-        </button>
-    </form>
 
+    </form>
+#}
 {% endblock %}
