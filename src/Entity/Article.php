@@ -285,6 +285,10 @@ class Article
     {
         $this->location = $location;
 
+        if (!$location || $location === 'intersteller_space') {
+            $this->setSpecificLocationName(null);
+        }
+
         return $this;
     }
 
